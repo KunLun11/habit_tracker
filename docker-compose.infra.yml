@@ -1,0 +1,67 @@
+version: "3.8"
+
+services:
+  zookeeper:
+    image: zookeeper:3.8
+    container_name: zookeeper
+    ports:
+      - "2181:2181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: "2181"
+      ZOOKEEPER_TICK_TIME: "2000"
+    volumes:
+      - zookeeper_data:/data
+      - zookeeper_data:/datalog
+
+  kafka:
+    image: confluentinc/cp-kafka:7.5.0
+    container_name: kafka
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: "1"
+      KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
+      KAFKA_ADVERTISED_LISTENERS: "PLAINTEXT://localhost:9092"
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: "PLAINTEXT:PLAINTEXT"
+      KAFKA_INTER_BROKER_LISTENER_NAME: "PLAINTEXT"
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: "1"
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+    depends_on:
+      - zookeeper
+    volumes:
+      - kafka_data:/var/lib/kafka/data
+
+  clickhouse:
+    image: clickhouse/clickhouse-server:23.8
+    container_name: clickhouse
+    ports:
+      - "8123:8123"  # HTTP
+      - "9000:9000"  # Native
+    environment:
+      CLICKHOUSE_DB: "habit_tracker"
+      CLICKHOUSE_USER: "default"
+      CLICKHOUSE_PASSWORD: "your_password"
+      CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: "1"
+    volumes:
+      - clickhouse_data:/var/lib/clickhouse
+      - ./analytics/sql/create_tables.sql:/docker-entrypoint-initdb.d/create_tables.sql
+
+  clickhouse-ui:
+    image: dbeaver/cloudbeaver:latest
+    container_name: clickhouse-ui
+    ports:
+      - "8978:8978"
+    environment:
+      CB_SERVER_NAME: "ClickHouse UI"
+      CB_ADMIN_NAME: "admin"
+      CB_ADMIN_PASSWORD: "admin"
+    volumes:
+      - cloudbeaver_data:/opt/cloudbeaver/workspace
+    depends_on:
+      - clickhouse
+
+volumes:
+  zookeeper_data:
+  kafka_data:
+  clickhouse_data:
+  cloudbeaver_data:
