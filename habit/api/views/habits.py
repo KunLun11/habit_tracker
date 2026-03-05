@@ -24,9 +24,6 @@ class HabitViewSet(
     def get_queryset(self):
         return self.queryset.filter(user=self.request.user)
 
-    def perform_create_kwargs(self):
-        return {"user": self.request.user}
-
     def get_object(self):
         obj = super().get_object()
         if obj.user != self.request.user:
@@ -90,4 +87,3 @@ class HabitLogViewSet(BaseViewSet, ListModelMixin):
 
     def list(self, request, *args, **kwargs):
         return self.list_endpoint(request, *args, **kwargs)
-    
