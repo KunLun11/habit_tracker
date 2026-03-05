@@ -73,9 +73,7 @@ REST_FRAMEWORK = {
         "rest_framework.filters.SearchFilter",
     ),
     "SEARCH_PARAM": "filter[search]",
-    "TEST_REQUEST_RENDERER_CLASSES": (
-        "rest_framework_json_api.renderers.JSONRenderer",
-    ),
+    "TEST_REQUEST_RENDERER_CLASSES": ("rest_framework_json_api.renderers.JSONRenderer",),
     "TEST_REQUEST_DEFAULT_FORMAT": "vnd.api+json",
     # "DEFAULT_AUTHENTICATION_CLASSES": [
     #     # "apps.account.services.auth.authentication.CustomUserAuthentication", TODO: Использовать при получении токена через админку  # noqa: E501
@@ -212,6 +210,36 @@ UNFOLD = {
             "700": "126 34 206",
             "800": "107 33 168",
             "900": "88 28 135",
+        },
+    },
+}
+
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "main_format": {
+            "format": "{asctime} - {levelname} - {module} - {filename} - {message}",
+            "style": "{",
+        },
+    },
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "formatter": "main_format",
+        },
+        "file": {
+            "class": "logging.FileHandler",
+            "formatter": "main_format",
+            "filename": "information.log",
+        },
+    },
+    "loggers": {
+        "main": {
+            "handlers": ["console", "file"],
+            "level": "INFO",
+            "propagate": True,
         },
     },
 }
