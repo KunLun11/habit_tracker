@@ -6,7 +6,7 @@ import clickhouse_connect
 from django.conf import settings
 from kafka import KafkaConsumer
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("main")
 
 
 class HabitConsumer:

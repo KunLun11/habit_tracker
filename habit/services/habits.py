@@ -10,7 +10,7 @@ from account.models.users import CustomUser
 from analytics.kafka_producer import habit_producer
 from habit.models.habits import Habit, HabitLog
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("main")
 
 
 class HabitManager:
